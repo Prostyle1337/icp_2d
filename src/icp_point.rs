@@ -1,4 +1,4 @@
-use nalgebra as na;
+use nalgebra::{self as na, Const, OPoint};
 pub trait ICPPoint: Clone{
     fn translate(&self,x: f32,y: f32) -> Self;
     fn rotate(&self,angle_rad: f32) -> Self;
@@ -24,6 +24,25 @@ impl ICPPoint for na::Point2<f32>{
         true
     }
 }
+
+impl ICPPoint for OPoint<f32, Const<2>>{
+    fn translate(&self,x: f32,y: f32) -> Self {
+        na::Point2::new(self.x+x,self.y+y)
+    }
+
+    fn rotate(&self,angle_rad: f32) -> Self {
+        na::Rotation2::new(angle_rad) * (*self)   
+    }
+
+    fn point(&self) -> OPoint<f32, Const<2>> {
+        *self
+    }
+
+    fn is_data_valid(&self) -> bool {
+        true
+    }
+}
+
 
 
 impl ICPPoint for (f32,f32){
